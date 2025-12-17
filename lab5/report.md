@@ -129,7 +129,6 @@ class TrainingDecorator(EmployeeDecorator):
 class BonusStrategy(ABC):
     @abstractmethod
     def calculate_bonus(self, employee: AbstractEmployee) -> float:
-        ...
 
 class PerformanceBonusStrategy(BonusStrategy):
     def calculate_bonus(self, employee: AbstractEmployee) -> float:
@@ -156,7 +155,6 @@ class BonusCalculator:
 class Observer(ABC):
     @abstractmethod
     def update(self, employee: AbstractEmployee, old_salary: float) -> None:
-        ...
 
 class Subject:
     def __init__(self):
@@ -250,7 +248,7 @@ class DatabaseConnection:
     
     def connect(self):
         if not self._initialized:
-            print("🔌 Инициализация БД...")
+            print(" Инициализация БД")
             self._connection = "sqlite:///company.db"
             self._initialized = True
         return self._connection
@@ -436,5 +434,5 @@ if __name__ == "__main__":
 
 - Исходный код: Полная реализация 5 паттернов выше
 - UML диаграммы:
-![UML Паттерны](report/uml_patterns.png)
+![UML Паттерны](report/diagram.png)
 - Дополнительно: Singleton thread-safe, Builder fluent API, Decorator chainable
