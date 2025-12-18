@@ -65,7 +65,13 @@ class EmployeeFactory:
         emp_type = kwargs.get('type', 'employee')
         if emp_type == 'developer':
             return Developer(**kwargs)
-        return Employee(**kwargs['id'], kwargs['name'], kwargs['department'], kwargs['base_salary'])
+        return Employee(
+            kwargs['id'],
+            kwargs['name'],
+            kwargs['department'],
+            kwargs['base_salary']
+        )
+
 
 class Developer(Employee):
     def __init__(self, id: int, name: str, department: str, base_salary: float, skills: List[str], seniority: str):
@@ -134,65 +140,3 @@ class AccountingObserver(Observer):
         print(f" Бухгалтерия: Пересчет налогов для {subject.name}")
 
 class HRSystem(Subject): pass
-
-# ДЕМОНСТРАЦИЯ
-def demo_patterns():
-    print("==========================================================")
-    print("ДЕМОНСТРАЦИЯ ПАТТЕРНОВ ПРОЕКТИРОВАНИЯ №5")
-    print("==========================================================\n")
-    
-    # Singleton
-    db1 = DatabaseConnection(); db2 = DatabaseConnection()
-    print(f"1. SINGLETON: db1 is db2: {db1 is db2}")
-    print(f"Подключение: {db1.connect()}\n")
-    
-    # Builder
-    developer = (EmployeeBuilder()
-                .set_id(101).set_name("Иван Петров").set_department("DEV")
-                .set_base_salary(60000).set_developer(["Python","Django"], "senior")
-                .build())
-    print(f"2. BUILDER: {developer.get_info()}, зарплата: {developer.calculate_salary()}\n")
-    
-    # Decorator
-    bonus_dev = BonusDecorator(developer, 10000)
-    trained_dev = TrainingDecorator(bonus_dev, "AWS Cloud")
-    print(f"3. DECORATOR:")
-    print(f"  Базовая: {developer.calculate_salary()}")
-    print(f"  +Бонус: {bonus_dev.calculate_salary()}")
-    print(f"  +Обучение: {trained_dev.calculate_salary()} | {trained_dev.get_info()}\n")
-    
-    # Strategy
-    hr_system = HRSystem()
-    hr_system.attach(HRObserver())
-    hr_system.attach(AccountingObserver())
-    
-    strategies = [
-        ("Производительность", PerformanceBonusStrategy()),
-        ("Проекты (3)", ProjectBonusStrategy()),
-        ("Продажи", SalesBonusStrategy())
-    ]
-    
-    developer.projects = ["AI", "Web", "Mobile"]  # для ProjectBonus
-    
-    print("4. STRATEGY (Бонусы):")
-    for name, strategy in strategies:
-        bonus = strategy.calculate_bonus(developer)
-        total = developer.calculate_salary() + bonus
-        print(f"  {name}: +{bonus} → {total}")
-    print()
-    
-    # Observer
-    old_salary = developer.calculate_salary()
-    developer._base_salary += 5000  # имитация повышения
-    hr_system.notify_salary_change(developer, old_salary)
-    
-    print("\nИТОГОВАЯ СИСТЕМА:")
-    print(f"Сотрудник: {trained_dev.get_info()} | Bonus:{bonus_dev._bonus}")
-    print(f"Финальная зарплата: {trained_dev.calculate_salary()} руб/мес")
-    
-    db = DatabaseConnection()
-    print(f"БД сохранено: 1 сотрудник")
-    print("==========================================================")
-
-if __name__ == "__main__":
-    demo_patterns()
