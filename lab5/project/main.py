@@ -41,8 +41,9 @@ class EmployeeBuilder:
         self._data['type'] = 'developer'; self._data['skills'] = skills
         self._data['seniority'] = seniority; return self
     
-    def build(self) -> 'DecoratedEmployee':
-        return DecoratedEmployee(EmployeeFactory.create_employee(**self._data))
+    def build(self) -> AbstractEmployee:
+        return EmployeeFactory.create_employee(**self._data)
+
 
 # BASE CLASSES
 class AbstractEmployee(ABC):
@@ -58,18 +59,26 @@ class Employee(AbstractEmployee):
     
     def calculate_salary(self) -> float: return self._base_salary
     def get_info(self) -> str: return f"{self.name} ({self.department})"
-
+        
 class EmployeeFactory:
     @staticmethod
     def create_employee(**kwargs) -> AbstractEmployee:
         emp_type = kwargs.get('type', 'employee')
         if emp_type == 'developer':
-            return Developer(**kwargs)
+            return Developer(
+                kwargs['id'],
+                kwargs['name'],
+                kwargs['department'],
+                kwargs['base_salary'],
+                kwargs['skills'],
+                kwargs['seniority'],
+            )
+        # обычный сотрудник
         return Employee(
             kwargs['id'],
             kwargs['name'],
             kwargs['department'],
-            kwargs['base_salary']
+            kwargs['base_salary'],
         )
 
 
