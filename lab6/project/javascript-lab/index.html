@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа 6. Куйбышев</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f0f7ff 0%, #f0f7ff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(180deg, #088d03 0%, #088d03 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #088d03;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border-left: 4px solid #088d03;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+
+        .output {
+            background: #1e1e1e;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #0f9c0b 0%, #0f9c0b 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 13px;
+            color: #1565c0;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        .example-result {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #6d0808;
+        }
+    </style>
+<script type="text/javascript" nonce="449df5de72484c7cbbdf7784ba5" src="//local.adguard.org?ts=1765984197536&amp;type=content-script&amp;dmn=ppl-ai-code-interpreter-files.s3.amazonaws.com&amp;url=https%3A%2F%2Fppl-ai-code-interpreter-files.s3.amazonaws.com%2Fweb%2Fdirect-files%2F300dc8f77ceb7b43f6e3a0946c4f5056%2Feff2d4c5-0e55-4cfc-8853-7f680cc886f0%2F0eb54730.html%3Fresponse-content-disposition%3Dattachment%253B%2520filename%253Dindex.html%253B%2520filename%252A%253DUTF-8%2527%2527index.html%26AWSAccessKeyId%3DASIA2F3EMEYE6DHGKOD6%26Signature%3D%252BEPRPmEtcreTRA2JX4QyvsbbesU%253D%26x-amz-security-token%3DIQoJb3JpZ2luX2VjELj%252F%252F%252F%252F%252F%252F%252F%252F%252F%252FwEaCXVzLWVhc3QtMSJIMEYCIQCfXz3alHuYtCmS%252BAU1SgDF3%252BLKTGXcRRn%252BRg8a8nmeTQIhANlftlzzT9GihgPiByuwKM1uB6MOMaDcIvaypQ28bHxbKvwECIH%252F%252F%252F%252F%252F%252F%252F%252F%252F%252FwEQARoMNjk5NzUzMzA5NzA1IgwEyRkxXkYxmX5MbRoq0AShVBIw9M1nv1N1FmcR4cmxIMeUzE%252FswIpIe%252BjFvLCpJMPxoxU%252BWG1%252FaP%252BBlnmsQScE9IkmvyPqDXWoKl%252B3GYRI%252FpIOH6incixOZYAACaLgDeEeRzCU0vK1iKmlKdy7SNfSZZjfMBzdUYG1xjKOotnTMTUX0aavrGeYzaCJ7Idxq7T5bOWeVZ66l%252F0QRMbkiXsrNnyUkugO5cegSBhYPoOQXvlGklJmYdwkquGHCcfI8Cfh8hw4ShkFJlEAbZCiEhi338V2oWcreIyjJr%252FS4Zw0R0yKu%252BNUS4ghIlq%252FFRDbVoI%252B%252FkvVKvpsKkq8LSUo9WabNakbQmRHHUhw7uX8Q0SPpbrNq6JWuNrdsAQxaMZHfT7qFJ7cuSAZjUiHrKXPeFynH5yyZ9DGBiqoUE3gSjxib3rJ0e%252BUJCmUMdP3wnevX9gJJfBTnffiP61dkzNiNNUzzLeTmiqjEhKzGrViVfaruATTHnI71IAPAZQc0Gxo8oovDx7K7N1h5cHYl8Xht1Uqkw5%252FE%252FdCvdP79hjAKAEuGLBQLU6BWVhgodKl5JQFcQ03x07x3jvFjRjSfSB3CWetKYt4VIwCo4R2yNveFqVpQdmwKqfQUdTstPSMzZ31KCZv2YMz6HCCuySWqvXX6fLaWRcrKs1bO1%252Ftnx17usajGl4mVrZsVnucVitMyEh05bgovYSIYRBtxCYLpVA3iP%252Fjmcl%252FnryYVEowpobELbtM8UJq6qTNiLtx5AqayzQU72cfgHs%252B%252BpZfKDtyOs3CSqwAiTBApelFw4ojSbnPejpOMIGji8oGOpcBLcnFGxopgeieKSyQ7ROQxotgb3f6UdNhiMl4avwh7sHWUKcNWMfYYDu3cnwh%252Bo67Vq4eOPE%252F24NPM3gjI0EnvX6%252BJqtZX32g8kJpWVkYGOvcBcjiYpd0vXlH0NLDuDQF14hVr1qzOxhsNuSOixUqRsf0jG7VMxNYHNTBtsxWW9THOMKWnn8h7RO%252BZ7XRLUctY7YGs8tcNg%253D%253D%26Expires%3D1765989493&amp;app=opera.exe&amp;css=3&amp;js=1&amp;rel=0&amp;rji=0&amp;sbe=0"></script>
+<script type="text/javascript" nonce="449df5de72484c7cbbdf7784ba5" src="//local.adguard.org?ts=1765984197536&amp;name=AdGuard%20Assistant&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script></head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Лабораторная работа 6</h1>
+            <h2>Куйбышев А.М | ПИН-б-о-24-1</h2>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>функции высшего порядка</h2>
+                <button onclick="demo1()"> запустить</button>
+                <div id="output1" class="output"></div>
+            </div>
+
+            <div class="section">
+                <h2>стрелочные функции и замыкания</h2>
+
+                <button onclick="demo2()"> запустить</button>
+                <div id="output2" class="output"></div>
+            </div>
+
+            <div class="section">
+                <h2>иммутабельные обновления объектов</h2>
+                <button onclick="demo3()">  запустить</button>
+                <div id="output3" class="output"></div>
+            </div>
+
+            <div class="section">
+                <h2>функциональная композиция</h2>
+                <button onclick="demo4()">  запустить</button>
+                <div id="output4" class="output"></div>
+            </div>
+
+            <div class="section">
+                <h2>асинхронное программирование</h2>
+                <button onclick="demo5()">  запустить</button>
+                <div id="output5" class="output"></div>
+            </div>
+
+            <div class="section">
+                <h2>практические утилиты</h2>
+                <button onclick="demo6()">  запустить</button>
+                <div id="output6" class="output"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function log(message, outputId) {
+            const output = document.getElementById(outputId);
+            output.innerHTML += message + '\n';
+        }
+
+        function clearOutput(outputId) {
+            document.getElementById(outputId).innerHTML = '';
+        }
+
+        function clearAllOutputs() {
+            for (let i = 1; i <= 6; i++) {
+                clearOutput(`output${i}`);
+            }
+        }
+        function demo1() {
+            clearOutput('output1');
+
+            const products = [
+                { name: 'iPhone', price: 999, inStock: true },
+                { name: 'MacBook', price: 1999, inStock: false },
+                { name: 'T-shirt', price: 29, inStock: true }
+            ];
+
+            const names = products.map(p => p.name);
+            log('map() - Названия: ' + names.join(', '), 'output1');
+
+            const available = products.filter(p => p.inStock);
+            log('filter() - Доступные: ' + available.map(p => p.name).join(', '), 'output1');
+            const total = products.reduce((sum, p) => sum + p.price, 0);
+            log('reduce() - Сумма цен: $' + total, 'output1');
+
+            const chainResult = products
+                .filter(p => p.inStock)
+                .map(p => ({ name: p.name, price: p.price }))
+                .reduce((sum, p) => sum + p.price, 0);
+            log('Цепочка (доступные товары, сумма): $' + chainResult, 'output1');
+        }
+
+        function demo2() {
+            clearOutput('output2');
+
+
+            const square = x => x * x;
+            const add = (a, b) => a + b;
+            log('Стрелочная функция: square(5) = ' + square(5), 'output2');
+            log('Стрелочная функция: add(3, 4) = ' + add(3, 4), 'output2');
+            log('', 'output2');
+
+            const createCounter = () => {
+                let count = 0;
+                return {
+                    increment: () => ++count,
+                    decrement: () => --count,
+                    get: () => count
+                };
+            };
+
+            const counter = createCounter();
+            log('Замыкание (счётчик):', 'output2');
+            log('  increment(): ' + counter.increment(), 'output2');
+            log('  increment(): ' + counter.increment(), 'output2');
+            log('  get(): ' + counter.get(), 'output2');
+            log('', 'output2');
+
+            const multiply = a => b => a * b;
+            const double = multiply(2);
+            log('Каррирование: multiply(2)(5) = ' + double(5), 'output2');
+        }
+
+        function demo3() {
+            clearOutput('output3');
+
+            const user = { name: 'John', age: 25, city: 'NYC' };
+            log('Оригинал: ' + JSON.stringify(user), 'output3');
+
+            const updated = { ...user, name: 'Jane', city: 'Boston' };
+            log('Обновлено: ' + JSON.stringify(updated), 'output3');
+            log('Оригинал не изменился: ' + JSON.stringify(user), 'output3');
+            log('', 'output3');
+
+            const items = [{ id: 1, qty: 2 }, { id: 2, qty: 1 }];
+            const newItems = items.map(item =>
+                item.id === 1 ? { ...item, qty: item.qty + 1 } : item
+            );
+            log('Массив (обновлено кол-во item 1): ', 'output3');
+            log('  Было: ' + JSON.stringify(items[0]), 'output3');
+            log('  Стало: ' + JSON.stringify(newItems[0]), 'output3');
+        }
+
+        function demo4() {
+            clearOutput('output4');
+
+            const pipe = (...fns) => x => fns.reduce((acc, fn) => fn(acc), x);
+
+            const compose = (...fns) => x => fns.reduceRight((acc, fn) => fn(acc), x);
+
+            const add5 = x => x + 5;
+            const multiply3 = x => x * 3;
+            const subtract10 = x => x - 10;
+
+            const pipeFunc = pipe(add5, multiply3, subtract10);
+            const composeFunc = compose(subtract10, multiply3, add5);
+
+            log('pipe(add5, multiply3, subtract10)(5):', 'output4');
+            log('  Шаги: 5 + 5 = 10, 10 * 3 = 30, 30 - 10 = 20', 'output4');
+            log('  Результат: ' + pipeFunc(5), 'output4');
+            log('', 'output4');
+
+            log('compose(subtract10, multiply3, add5)(5):', 'output4');
+            log('  (справа налево) то же самое: ' + composeFunc(5), 'output4');
+        }
+
+        function demo5() {
+            clearOutput('output5');
+
+            const simulateDelay = (msg, delay = 1000) =>
+                new Promise(resolve => {
+                    setTimeout(() => resolve(msg), delay);
+                });
+
+            (async () => {
+                const data1 = await simulateDelay('Данные пользователя загружены', 500);
+                log(data1, 'output5');
+
+                const data2 = await simulateDelay('Посты загружены', 500);
+                log(data2, 'output5');
+
+                const data3 = await simulateDelay('Комментарии загружены', 500);
+                log(data3, 'output5');
+            })();
+        }
+
+        function demo6() {
+            clearOutput('output6');
+
+            const memoize = (func) => {
+                const cache = new Map();
+                return (...args) => {
+                    const key = JSON.stringify(args);
+                    if (cache.has(key)) {
+                        log('Результат из кэша', 'output6');
+                        return cache.get(key);
+                    }
+                    log('Вычисление...', 'output6');
+                    const result = func(...args);
+                    cache.set(key, result);
+                    return result;
+                };
+            };
+
+            const fibonacci = (n) => n <= 1 ? n : fibonacci(n-1) + fibonacci(n-2);
+            const memoFib = memoize(fibonacci);
+
+            log('Memoize (fibonacci):', 'output6');
+            log('fib(10) = ' + memoFib(10), 'output6');
+            log('fib(10) ещё раз = ' + memoFib(10), 'output6');
+            log('', 'output6');
+
+            const debounce = (func, delay) => {
+                let timeoutId;
+                return (...args) => {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => func(...args), delay);
+                };
+            };
+
+            const search = (query) => log('поиск: ' + query, 'output6');
+            const debouncedSearch = debounce(search, 300);
+
+            log('Debounce (поиск):', 'output6');
+            debouncedSearch('ja');
+            debouncedSearch('jav');
+            debouncedSearch('java');
+            log('(ждём 300ms...)', 'output6');
+        }
+
+        function runAllDemos() {
+            clearAllOutputs();
+            demo1();
+            setTimeout(() => demo2(), 100);
+            setTimeout(() => demo3(), 200);
+            setTimeout(() => demo4(), 300);
+            setTimeout(() => demo5(), 400);
+            setTimeout(() => demo6(), 500);
+        }
+
+        window.addEventListener('load', () => {
+            console.log('Лабораторная работа 6. JavaScript и ФП');
+        });
+    </script>
+</body>
+</html>
